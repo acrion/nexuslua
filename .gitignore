@@ -1,0 +1,4 @@
+build-*
+**/build
+src/testing-resources/logs*
+
