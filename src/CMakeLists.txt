@@ -40,7 +40,7 @@ endif ()
 include(${acrion_cmake_SOURCE_DIR}/set-cpp-version.cmake)
 
 include(${acrion_cmake_SOURCE_DIR}/get-project-version-from-git-tag.cmake)
-get_project_version_from_git_tag("origin/master") #TODO
+get_project_version_from_git_tag("origin/main")
 
 # The following line sets variable PROJECT_VERSION, which is referenced in config.hpp.cmake
 project(nexuslua_executable VERSION ${version_major}.${version_minor}.${version_patch} DESCRIPTION "nexuslua executable")
@@ -48,9 +48,8 @@ project(nexuslua_executable VERSION ${version_major}.${version_minor}.${version_
 if (NOT TARGET nexuslua_library)
     FetchContent_Declare(
         nexuslua_library
-        # GIT_REPOSITORY https://github.com/acrion/nexuslua.git
-        GIT_REPOSITORY git@github.com:acrion/nexuslua_private.git # TODO
-        GIT_TAG dev # TODO
+        GIT_REPOSITORY https://github.com/acrion/nexuslua-library.git
+        GIT_TAG main
         GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(nexuslua_library)
