@@ -14,6 +14,69 @@ behind the desktop application [acrionphoto](https://github.com/acrion/photo).
 
 ---
 
+## Installation
+
+### Arch User Repository (AUR)
+
+If you are on an Arch-based Linux distribution, the easiest way to install is from the Arch User Repository (AUR).
+You will need an AUR helper, such as `pikaur` or `yay`.
+
+Using `pikaur`:
+```bash
+pikaur -S nexuslua
+```
+
+This will automatically download the source code, compile it, and install it on your system. The `nexuslua` executable will then be available in your `PATH`.
+
+### Build and Install from Source
+
+If you are not on Arch Linux or want to build the latest version yourself, you can compile it from source using CMake.
+
+**Prerequisites:**
+* A C++20 compatible compiler (e.g., GCC, Clang, MSVC)
+* CMake (version 3.25 or newer)
+* Git
+
+**1. Configure and Build**
+
+First, configure the project. A `Release` build is highly recommended for performance. Then, compile it.
+
+```bash
+# Configure the build from the repository root
+cmake -B build -S src -DCMAKE_BUILD_TYPE=Release
+
+# Compile the project
+cmake --build build
+```
+
+The `nexuslua` executable and the `libnexuslua.so` (or equivalent) library will be located in the `build/bin/` directory. You can run it directly from there.
+
+**2. (Optional) System-Wide Installation**
+
+To install `nexuslua` so it's available system-wide, you can use the `install` command. It is recommended to add `-DINSTALL_GTEST=OFF` during the configuration step to prevent Google Test files from being installed as well.
+
+```bash
+# 1. Configure for installation (add -DINSTALL_GTEST=OFF for a clean install)
+cmake -B build -S src -DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=OFF
+
+# 2. Build the project
+cmake --build build
+
+# 3. Install the files (usually requires administrator privileges)
+sudo cmake --install build
+```
+
+This will typically install the `nexuslua` binary to `/usr/local/bin` and the library to `/usr/local/lib`.
+
+**3. (Optional) Via the all-in-one orchestrator**
+
+If you want the full stack (including plugins & acrionphoto GUI app), you can use the umbrella repo:
+
+* [https://github.com/acrion/nexuslua-build](https://github.com/acrion/nexuslua-build)
+  Use `--profile nexuslua` to build the core engine only, or `--profile acrionphoto` for the entire application stack.
+
+---
+
 ## Tutorial: From 10 Seconds to 1 Second
 
 The best way to understand nexuslua is to see it in action. We'll take a simple, CPU-bound task—finding prime numbers in
@@ -390,27 +453,6 @@ Notes:
 * In the forthcoming public registry (`acrion/nexuslua-plugins`), the central list stores **only URLs** to each plugin’s TOML. Versioning and updates remain fully under the plugin author’s control.
 
 ---
-
-## Build
-
-### Standalone (recommended if you only need the CLI)
-
-You **do not** need `nexuslua-build` to build the `nexuslua` executable.
-
-```bash
-# from repo root
-cmake -B build src/
-cmake --build build
-```
-
-The resulting `nexuslua` binary is in `build/` (platform-specific subfolder).
-
-### Via the all-in-one orchestrator (optional)
-
-If you want the full stack (including plugins & acrionphoto GUI app), you can still use the umbrella repo:
-
-* [https://github.com/acrion/nexuslua-build](https://github.com/acrion/nexuslua-build)
-  Use `--profile nexuslua` to build the core engine only, or `--profile acrionphoto` for the entire application stack.
 
 ## Usage
 
