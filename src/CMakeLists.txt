@@ -49,7 +49,7 @@ if (NOT TARGET nexuslua_library)
     FetchContent_Declare(
         nexuslua_library
         GIT_REPOSITORY https://github.com/acrion/nexuslua-library.git
-        GIT_TAG main
+        GIT_TAG v0.9.2
         GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(nexuslua_library)
@@ -106,3 +106,5 @@ if (GENERATED_WITH_DBG_CONFIGURATION) # is set by set-compiler-flags.cmake
 endif ()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE nexuslua::nexuslua ${debugging_libraries})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
