@@ -107,16 +107,16 @@ endif ()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE nexuslua::nexuslua ${debugging_libraries})
 
-# Bundle runtime DLLs next to the executable (build & install)
-# - $<TARGET_RUNTIME_DLLS:...> expands to all runtime DLLs the EXE depends on.
-#   On non-Windows it expands to an empty list; no conditions needed.
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
-            $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND_EXPAND_LISTS
-    VERBATIM
-)
+# On Windows, copy all runtime DLLs (e.g. libnexuslua.dll) to the EXE dir.
+if (WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
+                $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND_EXPAND_LISTS
+        VERBATIM
+    )
+endif ()
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
 install(FILES $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> DESTINATION bin)
