@@ -45,11 +45,11 @@ get_project_version_from_git_tag("origin/main")
 # The following line sets variable PROJECT_VERSION, which is referenced in config.hpp.cmake
 project(nexuslua_executable VERSION ${version_major}.${version_minor}.${version_patch} DESCRIPTION "nexuslua executable")
 
-if (NOT TARGET nexuslua_library)
+if (NOT TARGET nexuslua_library AND NOT TARGET nexuslua::nexuslua)
     FetchContent_Declare(
         nexuslua_library
         GIT_REPOSITORY https://github.com/acrion/nexuslua-library.git
-        GIT_TAG v0.9.2
+        GIT_TAG v0.9.3
         GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(nexuslua_library)
@@ -107,4 +107,16 @@ endif ()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE nexuslua::nexuslua ${debugging_libraries})
 
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+# Bundle runtime DLLs next to the executable (build & install)
+# - $<TARGET_RUNTIME_DLLS:...> expands to all runtime DLLs the EXE depends on.
+#   On non-Windows it expands to an empty list; no conditions needed.
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMAND_EXPAND_LISTS
+    VERBATIM
+)
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+install(FILES $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> DESTINATION bin)
